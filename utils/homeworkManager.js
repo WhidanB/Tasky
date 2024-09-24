@@ -11,9 +11,14 @@ function loadHomeworkData() {
     const dataBuffer = fs.readFileSync(homeworkFilePath);
     const dataJSON = dataBuffer.toString();
     const data = JSON.parse(dataJSON);
+    if (!data.homeworkList || !Array.isArray(data.homeworkList)) {
+      data.homeworkList = [];
+    }
+    if (typeof data.nextId !== "number") {
+      data.nextId = 1;
+    }
     return data;
   } catch (e) {
-    // Si le fichier est vide ou n'existe pas, initialiser une structure de données vide
     return { homeworkList: [], nextId: 1 };
   }
 }
@@ -27,10 +32,10 @@ function saveHomeworkData(homeworkData) {
 // Ajouter un devoir avec un ID séquentiel
 function addHomework(homework) {
   const homeworkData = loadHomeworkData();
-  homework.id = homeworkData.nextId; // Assigner un ID séquentiel au devoir
+  homework.id = homeworkData.nextId;
   homeworkData.homeworkList.push(homework);
-  homeworkData.nextId++; // Incrémenter le compteur pour le prochain devoir
-  saveHomeworkData(homeworkData); // Sauvegarder les données mises à jour
+  homeworkData.nextId++;
+  saveHomeworkData(homeworkData);
 }
 
 // Récupérer la liste des devoirs
@@ -39,11 +44,19 @@ function getHomeworkList() {
   return homeworkData.homeworkList;
 }
 
-// Sauvegarder la liste des devoirs
+// Sauvegarder uniquement la liste des devoirs
 function saveHomework(homeworkList) {
   const homeworkData = loadHomeworkData();
-  homeworkData.homeworkList = homeworkList; // Mettre à jour la liste
-  saveHomeworkData(homeworkData); // Sauvegarder avec le compteur inchangé
+  homeworkData.homeworkList = homeworkList;
+  saveHomeworkData(homeworkData);
 }
 
-module.exports = { addHomework, getHomeworkList, saveHomework };
+// Réinitialiser le compteur d'ID à 1
+function resetIdCounter() {
+  const homeworkData = loadHomeworkData();
+  homeworkData.nextId = 1;
+  homeworkData.homeworkList = [];
+  saveHomeworkData(homeworkData);
+}
+
+module.exports = { addHomework, getHomeworkList, saveHomework, resetIdCounter };

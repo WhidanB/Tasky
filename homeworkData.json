@@ -1,4 +1,12 @@
 {
-  "homeworkList": [],
-  "nextId": 3
+  "homeworkList": [
+    {
+      "subject": "HTML",
+      "description": "\"TP\"",
+      "dueDate": "2024-10-10",
+      "file": "/uploads/MPD.pdf",
+      "id": 1
+    }
+  ],
+  "nextId": 2
 }

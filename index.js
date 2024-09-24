@@ -1,3 +1,4 @@
+require("dotenv").config(); // Charger les variables d'environnement depuis le fichier .env
 const { Client, GatewayIntentBits } = require("discord.js");
 const fs = require("fs");
 const client = new Client({
@@ -8,10 +9,10 @@ const client = new Client({
   ],
 });
 
-// Create a collection to hold all commands
+// Créer une collection de commandes
 client.commands = new Map();
 
-// Load all command files from the 'commands' folder
+// Charger toutes les commandes à partir du dossier 'commands'
 const commandFiles = fs
   .readdirSync("./commands")
   .filter((file) => file.endsWith(".js"));
@@ -28,16 +29,16 @@ client.once("ready", () => {
 client.on("messageCreate", (message) => {
   if (message.author.bot) return;
 
-  const args = message.content.slice(1).trim().split(/ +/); // Split the message content into arguments
-  const commandName = args.shift().toLowerCase(); // Extract the command name
+  const args = message.content.slice(1).trim().split(/ +/); // Divise le message en arguments
+  const commandName = args.shift().toLowerCase(); // Extrait le nom de la commande
 
-  // Check if the command exists
+  // Vérifier si la commande existe
   const command = client.commands.get(commandName);
 
   if (!command) return;
 
   try {
-    // Execute the corresponding command
+    // Exécuter la commande correspondante
     command.execute(message, args);
   } catch (error) {
     console.error(error);
@@ -47,4 +48,5 @@ client.on("messageCreate", (message) => {
   }
 });
 
-client.login();
+// Utiliser le token du bot depuis les variables d'environnement
+client.login(process.env.DISCORD_TOKEN);

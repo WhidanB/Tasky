@@ -10,9 +10,9 @@
   "author": "@WhidanB",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^14.16.2"
+    "discord.js": "^14.16.2",
+    "dotenv": "^16.4.5"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/WhidanB/Tasky.git"

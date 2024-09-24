@@ -48,5 +48,4 @@ client.on("messageCreate", (message) => {
   }
 });
 
-// Utiliser le token du bot depuis les variables d'environnement
 client.login(process.env.DISCORD_TOKEN);

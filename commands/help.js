@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
@@ -5,6 +6,11 @@ module.exports = {
   description:
     "Affiche la liste des commandes disponibles et leur fonctionnement",
   async execute(message) {
+    if (message.channel.id !== process.env.ALLOWED_CHANNEL) {
+      return message.channel.send(
+        "Cette commande ne peut être utilisée que dans le salon #cahier-de-texte."
+      );
+    }
     // Créer un embed pour afficher les informations des commandes
     const embed = new EmbedBuilder()
       .setColor("#0099ff")

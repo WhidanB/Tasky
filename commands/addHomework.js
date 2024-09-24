@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js");
 const Homework = require("../models/homework");
 const { addHomework } = require("../utils/homeworkManager");
@@ -39,6 +40,13 @@ module.exports = {
     "Ajoute un devoir avec un titre, matière, description, date de rendu, et fichier optionnel",
   async execute(message, args) {
     // Validation des arguments (titre, description et date)
+
+    if (message.channel.id !== process.env.ALLOWED_CHANNEL) {
+      return message.channel.send(
+        "Cette commande ne peut être utilisée que dans le salon #cahier-de-texte."
+      );
+    }
+
     if (args.length < 3) {
       return message.channel.send(
         "Format incorrect. Utilisez : !ajoutdevoir [titre] [description] [date DD-MM-AAAA]"
@@ -46,7 +54,7 @@ module.exports = {
     }
 
     const title = args[0]; // Titre du devoir
-    const description = args.slice(1, args.length - 1).join(' ');
+    const description = args.slice(1, args.length - 1).join(" ");
     const dueDate = args[args.length - 1]; // Date de rendu
 
     // Validation de la date au format DD-MM-AAAA

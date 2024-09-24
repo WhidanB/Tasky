@@ -1,3 +1,4 @@
+require("dotenv").config();
 const {
   EmbedBuilder,
   StringSelectMenuBuilder,
@@ -27,6 +28,12 @@ module.exports = {
   name: "tridevoirs",
   description: "Trie les devoirs par matière sélectionnée",
   async execute(message) {
+    if (message.channel.id !== process.env.ALLOWED_CHANNEL) {
+      return message.channel.send(
+        "Cette commande ne peut être utilisée que dans le salon #cahier-de-texte."
+      );
+    }
+
     // Créer un menu déroulant avec les matières disponibles
     const row = new ActionRowBuilder().addComponents(
       new StringSelectMenuBuilder()

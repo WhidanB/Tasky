@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const { getHomeworkList } = require("../utils/homeworkManager");
 const path = require("path");
@@ -22,6 +23,12 @@ module.exports = {
   name: "devoirs",
   description: "Affiche tous les devoirs ajoutés",
   async execute(message) {
+    if (message.channel.id !== process.env.ALLOWED_CHANNEL) {
+      return message.channel.send(
+        "Cette commande ne peut être utilisée que dans le salon #cahier-de-texte."
+      );
+    }
+
     // Récupérer la liste des devoirs
     const homeworkList = getHomeworkList();
 

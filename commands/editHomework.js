@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js");
 const { getHomeworkList, saveHomework } = require("../utils/homeworkManager");
 const fs = require("fs");
@@ -37,6 +38,12 @@ module.exports = {
   description:
     "Modifie un devoir existant avec titre, matière, description, date de rendu et fichier optionnel",
   async execute(message, args) {
+    if (message.channel.id !== process.env.ALLOWED_CHANNEL) {
+      return message.channel.send(
+        "Cette commande ne peut être utilisée que dans le salon #cahier-de-texte."
+      );
+    }
+
     // Validation des arguments (ID du devoir, titre, description, date)
     if (args.length < 4) {
       return message.channel.send(

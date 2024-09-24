@@ -1,3 +1,4 @@
+require("dotenv").config();
 const {
   getHomeworkList,
   saveHomework,
@@ -10,6 +11,12 @@ module.exports = {
   name: "supprimerdevoir",
   description: "Supprime un devoir par son numéro",
   execute(message, args) {
+    if (message.channel.id !== process.env.ALLOWED_CHANNEL) {
+      return message.channel.send(
+        "Cette commande ne peut être utilisée que dans le salon #cahier-de-texte."
+      );
+    }
+
     const homeworkId = parseInt(args[0]);
 
     let homeworkList = getHomeworkList();

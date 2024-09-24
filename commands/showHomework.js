@@ -1,47 +1,64 @@
+const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const { getHomeworkList } = require("../utils/homeworkManager");
 const path = require("path");
-const { AttachmentBuilder } = require("discord.js"); // Importer AttachmentBuilder pour envoyer des fichiers
+const fs = require("fs");
+
+// Liste des matières avec emojis et couleurs associés
+const subjects = [
+  { label: "Web", value: "Web", emoji: "🌐", color: "#1f8b4c" }, // Vert
+  { label: "Réseau", value: "Réseau", emoji: "📡", color: "#3498db" }, // Bleu
+  { label: "JAVA", value: "JAVA", emoji: "☕", color: "#e67e22" }, // Orange
+  {
+    label: "Communication",
+    value: "Communication",
+    emoji: "💬",
+    color: "#9b59b6",
+  }, // Violet
+  { label: "Anglais", value: "Anglais", emoji: "🇬🇧", color: "#2980b9" }, // Bleu Foncé
+  { label: "SQL", value: "SQL", emoji: "💾", color: "#f1c40f" }, // Jaune
+];
 
 module.exports = {
   name: "devoirs",
-  description: "Affiche la liste des devoirs, possibilité de trier par matière",
-  async execute(message, args) {
-    const subjectFilter = args[0];
+  description: "Affiche tous les devoirs ajoutés",
+  async execute(message) {
+    // Récupérer la liste des devoirs
     const homeworkList = getHomeworkList();
 
+    // Vérifier si la liste est vide
     if (homeworkList.length === 0) {
-      return message.channel.send("Aucun devoir enregistré.");
-    }
-
-    let filteredHomeworkList = homeworkList;
-
-    if (subjectFilter) {
-      filteredHomeworkList = filteredHomeworkList.filter(
-        (homework) =>
-          homework.subject.toLowerCase() === subjectFilter.toLowerCase()
+      return message.channel.send(
+        "Aucun devoir n'a été ajouté pour le moment."
       );
     }
 
-    for (const homework of filteredHomeworkList) {
-      let homeworkMessage = `ID: ${homework.id} - [${homework.subject}] ${homework.description} - à rendre pour le ${homework.dueDate}\n`;
+    // Afficher chaque devoir
+    for (const homework of homeworkList) {
+      const subjectInfo = subjects.find((s) => s.value === homework.subject);
 
-      // Si un fichier est associé au devoir, on l'envoie en tant que pièce jointe
+      const embed = new EmbedBuilder()
+        .setColor(subjectInfo ? subjectInfo.color : "#ffffff")
+        .setTitle(`${subjectInfo ? subjectInfo.emoji : ""} ${homework.title}`)
+        .setDescription(homework.description)
+        .addFields(
+          { name: "Matière", value: homework.subject, inline: true },
+          { name: "Date de rendu", value: homework.dueDate, inline: true }
+        )
+        .setFooter({ text: `Devoir ID: ${homework.id}` });
+
+      // Envoyer l'embed en premier
+      await message.channel.send({ embeds: [embed] });
+
+      // Si un fichier est associé au devoir, joindre le fichier après l'embed
       if (homework.file) {
         const filePath = path.join(__dirname, "..", homework.file);
-        try {
-          const attachment = new AttachmentBuilder(filePath); // Créer la pièce jointe
-          await message.channel.send({
-            content: homeworkMessage,
-            files: [attachment], // Joindre le fichier
-          });
-        } catch (err) {
-          console.error("Erreur lors de l'envoi du fichier :", err);
-          await message.channel.send(
-            `Impossible d'envoyer le fichier associé au devoir [${homework.subject}].`
-          );
+
+        if (fs.existsSync(filePath)) {
+          const attachment = new AttachmentBuilder(filePath);
+          await message.channel.send({ files: [attachment] });
+        } else {
+          await message.channel.send("Fichier introuvable.");
         }
-      } else {
-        await message.channel.send(homeworkMessage); // Pas de fichier, on envoie juste le texte
       }
     }
   },

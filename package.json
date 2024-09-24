@@ -1,0 +1,24 @@
+{
+  "name": "tasky",
+  "version": "1.0.0",
+  "description": "A simple homework discord bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "@WhidanB",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.16.2"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WhidanB/Tasky.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WhidanB/Tasky/issues"
+  },
+  "homepage": "https://github.com/WhidanB/Tasky#readme"
+}
